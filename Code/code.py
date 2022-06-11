@@ -73,8 +73,8 @@ led_gps = digitalio.DigitalInOut(board.LED1)
 led_gps.direction = digitalio.Direction.OUTPUT
 
 
-# piezo = digitalio.DigitalInOut(pin22)??
-# piezo.direction = digitalio.Direction.OUTPUT
+piezo = digitalio.DigitalInOut(board.D10)
+piezo.direction = digitalio.Direction.OUTPUT
 
 i2c = busio.I2C(board.SCL, board.SDA)  # uses board.SCL and board.SDA
 mpu = adafruit_mpu6050.MPU6050(i2c)
@@ -98,48 +98,25 @@ def mount_sd():
         vfs = storage.VfsFat(sd)
         storage.mount(vfs, "/sd")
 
-
-        #sdcard = adafruit_sdcard.SDCard(spi, cs)
-        #vfs = storage.VfsFat(sdcard)
-        #storage.mount(vfs, "/sd")
-
-
-        #spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
-        #cs = digitalio.DigitalInOut(board.SD_CS)
-        #sd   = adafruit_sdcard.SDCard(spi, cs)
-        #vfs = storage.VfsFat(sd)
-        #storage.mount(vfs, "/sd")
-        #
-
-
         led_sd.value = True
         return True
 
     except:
         print("Error SD Card")
         led_sd.value = False
+        time.sleep(1)
         return False
 
 
-def write_data(data, file_name="track.txt"):
-
-    # check if file exist
-    # if not sd.exists(file_name):
-    #    with open("/sd/" + file_name, "w") as f:
-    #    print("Write to sd: {}".format(data))
-    #    f.write(str(data)+"\r\n")
-
+def write_data(data, file_name="track11.txt"):
     with open("/sd/" + file_name, "a") as f:
-        #print("Write to sd: {}".format(data))
+        print("Write to sd: {}".format(data))
         f.write(str(data) + "\r\n")
 
 
 
 def get_gps():
-
     if nav.fix is gnss.PositionFix.INVALID:
-        # print("Waiting for fix...")
-        # return None
         return "Waiting for fix..."
     else:
         t = nav.timestamp[:6]
@@ -155,50 +132,57 @@ def get_gps():
 
 def mpu_dataframe():
     tp_mpu = mpu.acceleration + mpu.gyro
-   
-    #print("Sum Gyro raw %s," % str(tp_mpu[3:]))
     gyro_sum_value = sum_gyro(tp_mpu[3:])
     print((gyro_sum_value,))
+
     data_string=""
     for elem in tp_mpu:
-        data_string = data_string+"," + str(elem) 
-    data_string +=  "," + str(gyro_sum_value)  
+        data_string = data_string+"," + str(elem)
+    data_string +=  "," + str(gyro_sum_value)
     #print(data_string)
-    return data_string 
-    
-    
+    return [data_string , gyro_sum_value]
+
+def piezo_on_off(state=None):
+    if state == True:
+        piezo.value = True
+    else:
+        piezo.value = False
+        
+        
+
 def sum_gyro(tp_gyro):
     sum = 0.0
     for elem in tp_gyro:
         sum = sum + float(elem)
-        if sum > 4 or sum < -4:
+        if sum > 7 or sum < -7:
             print("Alert")
+            piezo_on_off(True)
+        
+            
     return sum
-    
-    
+
 sd_ready = False
 #check for sd card , blink if a Error
 while sd_ready == False:
     print("SD mount")
-    led_sd.value = not led_sd.value 
+    led_sd.value = not led_sd.value
     sd_ready = mount_sd()
     time.sleep(1)
 
 
-state_dic = {"gps": False, "piezo": False}
-
 last_print = time.monotonic()
-
-
-
+max_value = 0.0
 
 while True:
-        
+
 
     # this prints out all the values like a tuple which Mu's plotter prefer
     #print("(%.2f, %.2f, %.2f " % (mpu.acceleration), end=", ")
     #print("%.2f, %.2f, %.2f)" % (mpu.gyro))
     mpu_data = mpu_dataframe()
+    
+    if (max_value == 0.0 or float(mpu_data[1]) > max_value):
+        max_value = float(mpu_data[1])
     time.sleep(0.1)
 
     nav.update()
@@ -206,11 +190,10 @@ while True:
     if current - last_print >= 1.0:
         last_print = current
         gps_data = get_gps()
-        if gps_data == "Waiting for fix...":
-            state_dic["gps"] = False
+        #if gps_data == "Waiting for fix...":
+        #    pass
 
-        write_data(gps_data + mpu_data)
-
-    led_gps.value = state_dic["gps"]
-
-    #time.sleep(1)
+        write_data(gps_data + mpu_data[0] + "," +str(max_value))
+        max_value = 0.0 #reset after write to sd
+        if piezo.value == True:
+            piezo.value = False
