@@ -108,7 +108,7 @@ def mount_sd():
         return False
 
 
-def write_data(data, file_name="track11.txt"):
+def write_data(data, file_name="track.txt"):
     with open("/sd/" + file_name, "a") as f:
         print("Write to sd: {}".format(data))
         f.write(str(data) + "\r\n")
@@ -174,7 +174,7 @@ last_print = time.monotonic()
 max_value = 0.0
 
 while True:
-
+    #message =  timestamp,latitude,longitude,altitude,acc_x,acc_y,acc_z,gyro_x,gyro_y,gyro_z,gyro_sum_value,gyro_max_value
 
     # this prints out all the values like a tuple which Mu's plotter prefer
     #print("(%.2f, %.2f, %.2f " % (mpu.acceleration), end=", ")
