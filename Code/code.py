@@ -122,8 +122,8 @@ def get_gps():
     else:
         if led_gps.value is not True :
             led_gps.value = True
-        #t = nav.timestamp[:6]
-        #t_str = ("{},{},{},{}:{}:{},".format(t[0],t[1],t[2],t[3],t[4],t[5]))
+        t = nav.timestamp[:6]
+        t_str = "{},{},{},{}:{}:{},".format(t[0],t[1],t[2],t[3],t[4],t[5])
         #lat = str(nav.latitude)
         #lon = str(nav.longitude)
         #alt = str(nav.altitude)
@@ -135,8 +135,8 @@ def get_gps():
         lat=("Latitude: {0:.6f} ".format(nav.latitude))
         lon=("Longitude: {0:.6f}".format(nav.longitude))
         alt=("Altitude: {0:.6f} ".format(nav.altitude))
-        t=("Time: {} ".format(nav.timestamp[:6]))
-    return t, lat, lon, alt
+        #t=("Time: {} ".format(nav.timestamp[:6]))
+    return t_str, lat, lon, alt
 
 
 def mpu_dataframe():
@@ -151,7 +151,7 @@ def mpu_dataframe():
     #print(data_string)
     return [data_string , gyro_sum_value]
 
-def piezo_on_off(state=None):
+def piezo_on_off(state=False):
     if state == True:
         piezo.value = True
     else:
@@ -202,7 +202,7 @@ while True:
         print(gps_data)
 
 
-        write_data(gps_data + mpu_data[0] + "," +str(max_value))
+        write_data(gps_data[0] + gps_data[1] +"," +gps_data[2] +"," +gps_data[3] + mpu_data[0] + "," +str(max_value))
         max_value = 0.0 #reset after write to sd
         if piezo.value == True:
             piezo.value = False
