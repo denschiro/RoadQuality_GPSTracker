@@ -1,0 +1,8 @@
+Spresense Board
+Spresense Regular Ext. Board
+PCB Board  4cm * 6cm like this https://www.az-delivery.de/products/pcb-board-set-lochrasterplatte-platine-leiterplatte-4x4-stuck
+MPU6050  like this https://www.az-delivery.de/products/gy-521-6-achsen-gyroskop-und-beschleunigungssensor
+Piezo beeper like this https://www.az-delivery.de/products/buzzer-modul-aktiv
+Lipo V3  like this with 18650 Cell  https://www.az-delivery.de/products/battery-expansion-shield-18650-v3-inkl-usb-kabel 
+SD Card 8GB or greater Samsung Evo or Sandisk with FAT32 format
+Case  see in STL Folder
