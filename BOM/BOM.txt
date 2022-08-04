@@ -2,7 +2,7 @@ Spresense Board
 Spresense Regular Ext. Board
 PCB Board  4cm * 6cm like this https://www.az-delivery.de/products/pcb-board-set-lochrasterplatte-platine-leiterplatte-4x4-stuck
 MPU6050  like this https://www.az-delivery.de/products/gy-521-6-achsen-gyroskop-und-beschleunigungssensor
-Piezo beeper like this https://www.az-delivery.de/products/buzzer-modul-aktiv
+Piezo beeper like this https://www.ebay.de/itm/255283310851?_trkparms=amclksrc%3DITM%26aid%3D1110006%26algo%3DHOMESPLICE.SIM%26ao%3D1%26asc%3D20200818143230%26meid%3De0eb6f88b6864742899d09b0e580013b%26pid%3D101224%26rk%3D4%26rkt%3D5%26sd%3D125248606224%26itm%3D255283310851%26pm
 Lipo V3  like this with 18650 Cell  https://www.az-delivery.de/products/battery-expansion-shield-18650-v3-inkl-usb-kabel 
 SD Card 8GB or greater Samsung Evo or Sandisk with FAT32 format
 Case  see in STL Folder
