@@ -14,6 +14,7 @@ led_sd.direction = digitalio.Direction.OUTPUT
 led_gps = digitalio.DigitalInOut(board.LED1)
 led_gps.direction = digitalio.Direction.OUTPUT
 
+
 piezo = digitalio.DigitalInOut(board.D10)
 piezo.direction = digitalio.Direction.OUTPUT
 
@@ -26,13 +27,16 @@ mpu.gyro_range = adafruit_mpu6050.GyroRange.RANGE_250_DPS
 nav = gnss.GNSS([gnss.SatelliteSystem.GPS, gnss.SatelliteSystem.GLONASS])
 
 def mount_sd():
+
     try:
+
         sd = sdioio.SDCard(
             clock=board.SDIO_CLOCK,
             command=board.SDIO_COMMAND,
             data=board.SDIO_DATA,
             frequency=25000000,
         )
+
         vfs = storage.VfsFat(sd)
         storage.mount(vfs, "/sd")
 
@@ -52,10 +56,16 @@ def write_data(data, file_name="track.txt"):
         f.write(str(data) + "\r\n")
 
 
+
 def get_gps():
     if nav.fix is gnss.PositionFix.INVALID:
         led_gps.value = False
-        return "Waiting for fix..."
+        print ("Waiting for fix...")
+        t_str= "No Time"
+        lat = "0"
+        lon = "0"
+        alt = "0"
+
     else:
         if led_gps.value is not True :
             led_gps.value = True
@@ -137,6 +147,7 @@ while True:
         last_print = current
         gps_data = get_gps()
         print(gps_data)
+
 
         write_data(gps_data[0] + gps_data[1] +"," +gps_data[2] +"," +gps_data[3] + mpu_data[0] + "," +str(max_value))
         max_value = 0.0 #reset after write to sd
